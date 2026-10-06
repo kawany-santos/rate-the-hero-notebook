@@ -1,3 +1,8 @@
+import { Button } from "../common-components/Button/Button";
 export function Search() {
-	return <div>Hello, tela de busca!</div>;
+	return (
+		<div>
+			<Button ghost={true}>Buscar</Button>
+		</div>
+	);
 }
