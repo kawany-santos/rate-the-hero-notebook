@@ -7,6 +7,7 @@ import {
 	FontLetterSpacings,
 	FontFamilies,
 	FontWeights,
+	FontSizes,
 } from '../../shared/DesignTokens';
 export const Button = styled.button`
 	border: none;
@@ -25,11 +26,10 @@ export const Button = styled.button`
 	transition: 200ms all ease;
 	text-transform: uppercase;
     letter-spacing: ${FontLetterSpacings.MEDIUM};
-
+	font-size: ${FontSizes.ONE_QUARTER};
 
 	&:hover {
 		background-color: ${(props) =>
 		props.ghost ? Colors.GRAY_700 : Colors.BLUE_550};
 	}
 `;
-//	font-size: ${FontSizes.ONE_QUARTER};

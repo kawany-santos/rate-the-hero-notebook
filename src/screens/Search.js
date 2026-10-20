@@ -13,10 +13,13 @@ import {
 	Option, 
  } from "../common-components/SelectField/SelectField";
 import { Alert } from "../common-components/Alert/Alert";
+import React from "react";
 import { Flex, Box} from 'reflexbox';
 import { Spaces } from "../shared/DesignTokens";
 import { HeroCard } from "../components/HeroCard/HeroCard";
 import styled from "styled-components";
+import axios from "axios";
+
 const HeroesGrid = styled(Box)`
  	display: grid;
 	grid-template-columns: 1fr;
@@ -27,8 +30,39 @@ const HeroesGrid = styled(Box)`
 
 	}
 `;
+
+async function searchHero(heroName) {
+	const { data } = await axios.get(`/search/${heroName}`, {
+		baseURL: `${process.env.REACT_APP_SUPER_HERO_API_BASE_URL}/${process.env.REACT_APP_SUPER_HERO_API_KEY}`,
+	});
+	return data.results || [];
+}
+
 export function Search() {
+	const [heroes, setHeroes] = React.useState([]);
+	const [search, setSearch] = React.useState({
+		value: null,
+		doSearch: false,
+	});
+	
+React.useEffect(() => {
+		if (search.doSearch) {
+			searchHero(search.value).then((heroes) => {
+				setHeroes(heroes);
+				setSearch((prevValue) => ({ ...prevValue, doSearch: false }));
+			});
+		}
+	}, [search]);
+
+function handleUpdateSearchValue({ target: { value } }) {
+		setSearch((prevValue) => ({ ...prevValue, value }));
+	}
+	function handleSearch() {
+		setSearch((prevValue) => ({ ...prevValue, doSearch: true }));
+	}
+
 	return (
+		
 		<div>
 			<Flex
 				width={['100%', '600px']}
@@ -38,35 +72,31 @@ export function Search() {
 				mb={[Spaces.TWO, Spaces.FOUR]}
 			>
 				<Box flexGrow="1">
-					<SearchField placeholder="Digite um nome de herói ou heroína" />
+					<SearchField placeholder="Digite um nome de herói ou heroína" 
+					onKeyUp={handleUpdateSearchValue}
+					/>
 				</Box>
 				<Box ml={Spaces.TWO}>
-					<Button>Buscar</Button>
+					<Button onClick={handleSearch}>Buscar</Button>
 				</Box>
 			</Flex>
 			<HeroesGrid
 				px={[Spaces.ONE, Spaces.TWO]}
 				pb={[Spaces.ONE, Spaces.TWO]}
 			>
-				<HeroCard
-					secretIdentity="Terry McGinnis"
-					name="Batman"
-					picture="https://www.superherodb.com/pictures2/portraits/10/100/10441.jpg"
-					universe="DC Comics"
-				/>
-				<HeroCard
-					secretIdentity="Bruce Wayne"
-					name="Batman"
-					picture="https://www.superherodb.com/pictures2/portraits/10/100/639.jpg"
-					universe="DC Comics"
-				/>
-				<HeroCard
-					secretIdentity="Dick Grayson"
-					name="Batman II"
-					picture="https://www.superherodb.com/pictures2/portraits/10/100/1496.jpg"
-					universe="DC Comics"
-				/>
+				{heroes.map((hero) => (
+					<HeroCard
+						key={hero.id}
+						id={hero.id}
+						secretIdentity={hero.biography['full-name']}
+						name={hero.name}
+						picture={hero.image.url}
+						universe={hero.biography.publisher}
+					/>
+				))}
 			</HeroesGrid>
 		</div>
 	);
 }
+
+

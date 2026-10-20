@@ -5,6 +5,7 @@ import {
 	FontLineHeights,
 	FontSizes,
 	FontWeights,
+	FontLetterSpacings,
 } from '../../shared/DesignTokens';
 export const Caption = styled.span`
 	font-family: ${FontFamilies.PRIMARY};
@@ -15,10 +16,10 @@ export const Caption = styled.span`
 	margin: 0;
 	padding: 0;
     text-transform: uppercase;
+	letter-spacing: ${FontLetterSpacings.MEDIUM};
 	
 `;
 Caption.defaultProps = {
 	color: Colors.NEUTRAL_BLACK,
 };
 
-//letter-spacing: ${FontLetterSpacings.MEDIUM};
